@@ -1,27 +1,67 @@
 const express = require('express');
+const multer = require('multer');
 
 const Post = require('../models/post'); // a mongoose model setup to talk to the mongoDB.
 
 const router = express.Router();
 
-router.post('', (req, res, next) => {
+const MIME_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg'
+};
+
+// Configure multer: where to store files, and how to store them (proper name, etc)
+const storage = multer.diskStorage({
+    // function called when multer tries to save a file
+    // The path to the file is relative to the server.js file
+    destination: (req, file, cb) => {
+        const isValid = MIME_TYPE_MAP[file.mimetype];
+        let error = new Error("Invalid mime type: " + file.mimetype);
+        if (isValid) {
+            error = null;
+        }
+        cb(error, 'backend/images');
+    },
+    filename: (req, file, cb) => {
+        const name = file.originalname.toLowerCase().split(' ').join('-');
+        const ext = MIME_TYPE_MAP[file.mimetype];
+        cb(null, name + '-' + Date.now() + '.' + ext);
+    }
+});
+
+// Use multer as middlewear to store the file coming over the wire.
+// Use the multer(storage).single('image') function call. The 'image'
+// parameter is the object that contains the image.
+router.post('', multer({storage: storage}).single('image'), (req, res, next) => {
+    const host = req.protocol + '://' + req.get('host');
     const post = new Post({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath: host + '/images/' + req.file.filename
     });
     post.save(post).then(createdPost => {
         res.status(201).json({
             message: 'Post added sucessfully',
-            postId: createdPost._id
+            post: {
+                ...createdPost,
+                id: createdPost._id,
+            }
         })
     });
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+        const host = req.protocol + '://' + req.get('host');
+        imagePath = host + '/images/' + req.file.filename;
+    }
     const post = new Post({
         _id: req.body.id,
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath: imagePath
     });
     Post.updateOne({_id: req.params.id}, post)
         .then((result) => {
@@ -40,7 +80,6 @@ router.get('', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-    console.log("request id = " + req.params.id);
     Post.findById(req.params.id)
         .then(post => {
             if (post) {

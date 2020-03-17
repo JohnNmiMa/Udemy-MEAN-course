@@ -18,3 +18,7 @@ input[type="file"] {
 .image-preview img {
     height: 100%;
 }
+
+button[type="button"] {
+    margin-bottom: 1.25rem;
+}

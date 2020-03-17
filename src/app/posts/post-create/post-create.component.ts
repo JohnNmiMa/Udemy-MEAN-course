@@ -16,7 +16,7 @@ export class PostCreateComponent implements OnInit {
     public isLoading = false;
     public form: FormGroup;
     public imagePreview: string;
-    private mode = 'create';
+    public mode = 'create';
     private postId: string;
 
     constructor(public postsService: PostsService, public route: ActivatedRoute) {
@@ -51,7 +51,6 @@ export class PostCreateComponent implements OnInit {
                             content: postData.content,
                             imagePath: postData.imagePath
                         };
-                        console.log(this.post);
                         this.form.setValue({
                             title: this.post.title,
                             content: this.post.content,
@@ -103,6 +102,7 @@ export class PostCreateComponent implements OnInit {
         reader.onload = () => {
             // This callback is called when the file is done loading the file.
             this.imagePreview = reader.result as string;
+            console.log(this.imagePreview);
         };
 
         // Start the process to load the file.

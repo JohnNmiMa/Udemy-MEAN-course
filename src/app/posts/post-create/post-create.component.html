@@ -10,13 +10,20 @@
             <mat-error *ngIf="form.get('title').invalid">Please enter a post title</mat-error>
         </mat-form-field>
 
-        <div>
-            <button type="button" mat-stroked-button (click)="filePicker.click()">Pick Image</button>
-            <input type="file" #filePicker (change)="onImagePicked($event)">
+        <div class="image-preview" *ngIf="mode === 'edit' && !imagePreview">
+            <img [src]="post.imagePath" [alt]="form.value.title">
         </div>
 
         <div class="image-preview" *ngIf="imagePreview && imagePreview !== '' && form.get('image').valid">
             <img [src]="imagePreview" [alt]="form.value.title">
+        </div>
+
+        <div>
+            <button type="button" mat-stroked-button (click)="filePicker.click()">
+                <span *ngIf="mode === 'create'">Pick Image</span>
+                <span *ngIf="mode === 'edit'">Pick Different Image</span>
+            </button>
+            <input type="file" #filePicker (change)="onImagePicked($event)">
         </div>
 
         <mat-form-field>

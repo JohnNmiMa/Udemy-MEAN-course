@@ -102,7 +102,6 @@ export class PostCreateComponent implements OnInit {
         reader.onload = () => {
             // This callback is called when the file is done loading the file.
             this.imagePreview = reader.result as string;
-            console.log(this.imagePreview);
         };
 
         // Start the process to load the file.

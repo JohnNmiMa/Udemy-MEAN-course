@@ -23,7 +23,7 @@ export class PostCreateComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // Setup an Angular reactive form
+        // Setup an Angular reactive form to create posts
         this.form = new FormGroup({
             title: new FormControl(null, {
                 validators: [Validators.required, Validators.minLength(3)]

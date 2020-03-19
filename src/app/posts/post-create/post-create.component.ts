@@ -1,28 +1,36 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 
 import {PostsService} from '../posts.service';
 import {Post} from '../post.model';
 import { mimeType } from './mime-type.validator';
+import {Subscription} from 'rxjs';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
     selector: 'app-post-create',
     templateUrl: './post-create.component.html',
     styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
     public post: Post;
     public isLoading = false;
     public form: FormGroup;
     public imagePreview: string;
     public mode = 'create';
     private postId: string;
+    private authStatusSub: Subscription;
 
-    constructor(public postsService: PostsService, public route: ActivatedRoute) {
-    }
+    constructor(
+        public postsService: PostsService,
+        public route: ActivatedRoute,
+        private authService: AuthService) {}
 
     ngOnInit(): void {
+        this.authStatusSub = this.authService.getAuthStatusListener()
+            .subscribe( authStatus => this.isLoading = false );
+
         // Setup an Angular reactive form to create posts
         this.form = new FormGroup({
             title: new FormControl(null, {
@@ -49,7 +57,8 @@ export class PostCreateComponent implements OnInit {
                             id: postData._id,
                             title: postData.title,
                             content: postData.content,
-                            imagePath: postData.imagePath
+                            imagePath: postData.imagePath,
+                            creator: postData.creator
                         };
                         this.form.setValue({
                             title: this.post.title,
@@ -106,6 +115,10 @@ export class PostCreateComponent implements OnInit {
 
         // Start the process to load the file.
         reader.readAsDataURL(file);
+    }
+
+    ngOnDestroy(): void {
+        this.authStatusSub.unsubscribe();
     }
 
 }

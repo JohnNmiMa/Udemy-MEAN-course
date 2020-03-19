@@ -23,7 +23,7 @@ router.post('/signup', (req, res, next) => {
                 })
                 .catch(err => {
                     res.status(500).json({
-                        error: err
+                        message: "Invalid authentication credentials!"
                     });
                 });
         });
@@ -32,7 +32,7 @@ router.post('/signup', (req, res, next) => {
 router.post('/login', (req, res, next) => {
     // A multi-step process to validate a user login and create a token to be sent back.
     let fetchedUser;
-    User.findOne({ email: req.body.email}).then(user => {
+    User.findOne({ email: req.body.email }).then(user => {
         if (!user) {
             return res.status(401).json({
                 message: "Authentication failed."
@@ -59,11 +59,12 @@ router.post('/login', (req, res, next) => {
 
         res.status(200).json({
             token: token,
-            expiresIn: 3600
+            expiresIn: 3600,
+            userId: fetchedUser._id
         })
     })
     .catch(err => {
-        message: "Authentication failed!";
+        message: "Invalid authentication credentials!";
     })
 
 });

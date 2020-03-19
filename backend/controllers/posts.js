@@ -18,11 +18,11 @@ exports.createPost = (req, res, next) => {
             }
         })
     })
-        .catch(error => {
-            res.status(500).json({
-                message: "Creating a post failed!"
-            })
-        });
+    .catch(error => {
+        res.status(500).json({
+            message: "Creating a post failed!"
+        })
+    });
 };
 
 exports.updatePost = (req, res, next) => {
@@ -46,6 +46,8 @@ exports.updatePost = (req, res, next) => {
             // Might or might not have found a valid post
             if (result.nModified > 0) {
                 res.status(200).json({message: "Post update sucessful!"});
+            } else if (result.n > 0 & result.nModified === 0) {
+                res.status(200).json({message: "Post wasn't different, hence no update was necessary!"});
             } else {
                 res.status(401).json({message: "Not authorized to update post!"});
             }

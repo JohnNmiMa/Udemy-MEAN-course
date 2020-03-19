@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
         // Returning true will allow the route to be accessable.
         const isAuthenticated = this.authService.getIsAuthenticated();
         if (!isAuthenticated) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/auth/login']);
         }
         return isAuthenticated;
     }

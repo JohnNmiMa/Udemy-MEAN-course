@@ -10,7 +10,7 @@ const app = express(); // Start the express app
 // Connect to the mongodb with the connection string from MongoDB Atlas
 // This connection was changed to write to the 'node-angular' db
 mongoose.connect(
-    'mongodb+srv://jmarks:please0pmo@markscluster0-mcbsj.mongodb.net/node-angular'
+    `mongodb+srv://jmarks:${process.env.MONGO_ATLAS_PW}@markscluster0-mcbsj.mongodb.net/node-angular`
     )
     .then(() => {
         console.log('Connected to mongodb database');

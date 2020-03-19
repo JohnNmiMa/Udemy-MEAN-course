@@ -6,7 +6,7 @@ const User = require('../models/user');
 exports.createuser = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
-            const user = new user({
+            const user = new User({
                 email: req.body.email,
                 password: hash
             });
@@ -50,7 +50,7 @@ exports.userLogin = (req, res, next) => {
         // Now, let's create the JSON Web-token.
         const token = jwt.sign(
             {email: fetchedUser.email, userId: fetchedUser._id},
-            'secret_this_should_be_longer',
+            process.env.JWT_KEY,
             { expiresIn: '1h' }
         );
 

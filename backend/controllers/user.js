@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
@@ -30,6 +30,8 @@ exports.userLogin = (req, res, next) => {
     // A multi-step process to validate a user login and create a token to be sent back.
     let fetchedUser;
     User.findOne({ email: req.body.email }).then(user => {
+        console.log("### user =");
+        console.log(user);
         if (!user) {
             return res.status(401).json({
                 message: "Authentication failed."

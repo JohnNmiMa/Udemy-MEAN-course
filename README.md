@@ -2,9 +2,16 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.6.
 
-## Development server
+## Development frontend server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+The backend package.json file has a bcrypt dependency. You might need to package 'bcryptjs'.
+The bcrypt package will need to be compiled on the server where it is installed during npm install time. Some Linux installation don't
+give permission to write to /tmp to build bcrypt. Therefore, you will need to download the JavaScript version - bcrypt.js.
+And then in the code, use require('bcryptjs');
+
+## Development backend server
+Run `cd backend; npm run start:server`
 
 ## Code scaffolding
 
